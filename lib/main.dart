@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newapp/repositories/api_calling/new_api_call/fetch_posts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -106,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: ()=>FetchPosts().getPosts(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
