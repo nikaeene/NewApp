@@ -5,9 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:newapp/constants/Constants.dart';
 import 'package:newapp/models/json_model/json_model.dart';
 
+import '../../../abstracts/abstracts.dart';
 import '../../../models/post_model/post_model.dart';
 
-class FetchPosts{
+class FetchPosts implements FetchPost{
 
   //try to get a result from API, pars it and get list of posts out.
   Future<List<PostModel>> getPosts() async{
