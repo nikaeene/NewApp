@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:newapp/repositories/api_calling/new_api_call/fetch_posts.dart';
+import 'package:newapp/sevices/database/create_database.dart';
+
+import 'models/post_model/post_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -107,7 +110,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()=>FetchPosts().getPosts(),
+        onPressed: () async{
+          List<PostModel> posts = await FetchPosts().getPosts();
+          print('fetchData: $posts');
+
+          bool result = await MyDatabase().insertPosts(posts);
+          print('result: $result');
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

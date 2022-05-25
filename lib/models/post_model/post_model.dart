@@ -30,4 +30,23 @@ class PostModel{
   factory PostModel.fromJson(Map<String, dynamic> json){
     return PostModel(json['id'], json['type'], json['slug'], json['url'], json['status'], json['title'], json['title_plain'], json['content'], json['excerpt'], json['date'], json['modified'], json['categories']);
   }
+
+  Map<String, dynamic> toMap(){
+    Map<String, dynamic> myMap= {
+      'postId' : this.id,
+      'type' : this.type,
+      'slug' : this.slug,
+      'url' : this.url,
+      'status' : this.status,
+      'title' : this.title,
+      'title_plain' : this.title_plain,
+      'content' : this.content,
+      'excerpt' : this.excerpt,
+      'date' : this.date,
+      'modified' : this.modified,
+      'categories' : '${this.categories}'
+    };
+
+    return myMap;
+  }
 }
