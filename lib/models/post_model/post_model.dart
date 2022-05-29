@@ -10,7 +10,7 @@ class PostModel{
   String excerpt;
   String date;
   String modified;
-  List categories;
+  var categories;
 
   PostModel(
       this.id,

@@ -1,15 +1,18 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../abstracts/abstracts.dart';
 import '../../models/post_model/post_model.dart';
 
-class MyDatabase {
+class MyDatabase implements workingDatabase{
   static Database? _database;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
+
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'newsApp.db');
 
@@ -29,9 +32,7 @@ class MyDatabase {
           'modified TEXT NOT NULL,'
           'categories TEXT NOT NULL'
           ")");
-    }, onOpen:(db){
-      print('database: ${db.path}');
-    });
+    },);
     print('database: ${path}');
     return database;
   }
@@ -45,5 +46,19 @@ class MyDatabase {
       db.insert('posts',post.toMap());
     }
     return true;
+  }
+
+  Future<List<PostModel>> readPostFromDb() async{
+    final db = await database;
+    List<PostModel> posts = [];
+    List<Map<String, dynamic>> results = await db.query('posts');
+
+    log('the result: $results');
+    for(var result in results){
+      posts.add(PostModel.fromJson(result));
+      print('the post: $posts');
+    }
+
+    return posts;
   }
 }
