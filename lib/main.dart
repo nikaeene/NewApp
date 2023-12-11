@@ -46,61 +46,67 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+List<PostModel> myPosts = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('NewsApp', style: Theme.of(context).textTheme.headline4,),),
-      body: BlocProvider<ReadNewsBloc>(
-        create: (context) =>
-        ReadNewsBloc()
-          ..add(AddReadNews()),
-        child: BlocBuilder<ReadNewsBloc, ReadNewsState>(
-          builder: (context, state) {
-            if(state is ReadNewsLoading){
-              return const Center(child: CircularProgressIndicator(),);
-            }if(state is ReadNewsFailed){
-              return Center(child: Text('Fetching the data Failed because: ${state.e}'),);
-            }if(state is ReadNewsLoaded)
-            return Container(
-              padding: EdgeInsets.all(15),
-              color: Colors.white,
-              child: ListView.builder(
-                  itemCount: state.posts.length,
-                  itemBuilder: (context, index) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height/6,
-                  width: MediaQuery.of(context).size.width,
-                  child: Card(
-                    elevation: 2,
-                    color: Colors.white70,
-                    child: Container(
-                      padding: EdgeInsets.all(15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: Container(child: Text(state.posts[index].title, style: Theme.of(context).textTheme.headline6, textDirection: TextDirection.rtl,),)),
-                          SizedBox(height: 10,),
-                          Expanded(
-                            flex: 5,
-                              child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Directionality(
-                                      textDirection: TextDirection.rtl,
-                                      child: HtmlWidget(state.posts[index].excerpt,))))
-                        ],
-                      ),
+      body: BlocConsumer<ReadNewsBloc, ReadNewsState>(
+        bloc: ReadNewsBloc()..add(AddReadNews()),
+        listener: (context, state){
+          print('state: $state');
+          if(state is ReadNewsLoaded){
+             ReadNewsBloc()..add(AddReadNews());
+            print('object');
+          }
+        },
+
+        builder: (context, state) {
+          if(state is ReadNewsLoading){
+            return const Center(child: CircularProgressIndicator(),);
+          }if(state is ReadNewsFailed){
+            return Center(child: Text('Fetching the data Failed because: ${state.e}'),);
+          }if(state is ReadNewsLoaded){
+            myPosts = state.posts;
+          return Container(
+            padding: EdgeInsets.all(15),
+            color: Colors.white,
+            child: ListView.builder(
+                itemCount: state.posts.length,
+                itemBuilder: (context, index) {
+              return SizedBox(
+                height: MediaQuery.of(context).size.height/6,
+                width: MediaQuery.of(context).size.width,
+                child: Card(
+                  elevation: 2,
+                  color: Colors.white70,
+                  child: Container(
+                    padding: EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                            flex: 2,
+                            child: Container(child: Text(state.posts[index].title, style: Theme.of(context).textTheme.headline6, textDirection: TextDirection.rtl,),)),
+                        SizedBox(height: 10,),
+                        Expanded(
+                          flex: 5,
+                            child: Container(
+                                alignment: Alignment.centerRight,
+                                child: Directionality(
+                                    textDirection: TextDirection.rtl,
+                                    child: HtmlWidget(state.posts[index].excerpt,))))
+                      ],
                     ),
                   ),
-                );
-              }),
-            );
-              return Center(child: Text('Please load the data!', style: Theme.of(context).textTheme.headline2));
-          },
-        ),
+                ),
+              );
+            }),
+          );
+          }
+            return Center(child: Text('Please load the data!', style: Theme.of(context).textTheme.headline2));
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

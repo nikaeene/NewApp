@@ -51,12 +51,10 @@ class MyDatabase implements workingDatabase{
   Future<List<PostModel>> readPostFromDb() async{
     final db = await database;
     List<PostModel> posts = [];
-    List<Map<String, dynamic>> results = await db.query('posts');
+    List<Map<String, dynamic>> results = await db.query('posts', orderBy: 'id DESC');
 
-    log('the result: $results');
     for(var result in results){
       posts.add(PostModel.fromJson(result));
-      print('the post: $posts');
     }
 
     return posts;
